@@ -662,7 +662,7 @@ class PhotoTileForPicasaBasic extends PhotoTileForPicasaBase{
     if( 'generator' == $currenttab ) { 
       echo '<input name="'. $this->settings.'_'.$currenttab .'[submit-'. $currenttab .']" type="submit" class="button-primary topbutton" value="Generate Shortcode" /><br> ';
       if($short){
-        echo '<div id="'.$this->settings.'-shortcode" style="position:relative;clear:both;margin-bottom:20px;" ><div class="announcement" style="margin:0 0 10px 0;"> Now, copy (Crtl+C) and paste (Crtl+P) the following shortcode into a page or post. </div>';
+        echo '<div id="'.$this->settings.'-shortcode" style="position:relative;clear:both;margin-bottom:20px;" ><div class="announcement" style="margin:0 0 10px 0;"> Now, copy (Crtl+C) and paste (Crtl+V) the following shortcode into a page or post. </div>';
         echo '<div><textarea class="auto_select">'.$short.'</textarea></div></div>';
       }
     }

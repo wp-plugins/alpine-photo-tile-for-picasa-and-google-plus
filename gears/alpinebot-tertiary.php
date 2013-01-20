@@ -73,7 +73,8 @@ class PhotoTileForPicasaBot extends PhotoTileForPicasaBasic{
         $results = @unserialize($results);
         if( count($results) ){
           $results['hidden'] .= '<!-- Retrieved from cache -->';
-          return $results;
+          $this->results = $results;
+          return;
         }
       }
     }

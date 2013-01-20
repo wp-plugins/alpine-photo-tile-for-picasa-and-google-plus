@@ -2,8 +2,8 @@
 /**
  * Alpine PhotoTile for Picasa: Shortcode
  *
- * @since 1.1.1
- *
+ * @ Since 1.1.1
+ * @ Updated 1.2.3.1
  */
  
   function APTFPICAbyTAP_shortcode_function( $atts ) {
@@ -21,7 +21,7 @@
     $id = rand(100, 1000);
     $bot->wid = 'id'.$id;
     $bot->options = $options;
-    $bot->photo_retrieval($id, $options);
+    $bot->photo_retrieval();
     
     $bot->enqueue_style_and_script();
     

@@ -4,7 +4,7 @@ Donate link: thealpinepress.com
 Tags: photos, picasa, google, plus, photostream, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
 Requires at least: 2.8
 Tested up to: 3.5
-Stable tag: 1.2.3
+Stable tag: 1.2.3.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -160,3 +160,6 @@ I am a one-man development team and I distribute these plugins for free, so plea
 * Added FancyboxForAlpine (Fancybox Safemode)
 * Added choice between Fancybox, prettyBox, and ColorBox
 * Added hidden options, including custom rel for lightbox
+
+= 1.2.3.1 =
+* Fixed cache retrieval
