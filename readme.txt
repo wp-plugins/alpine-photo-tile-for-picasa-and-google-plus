@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Stylish and compact plugin for displaying Picasa and Google Plus images in a sidebar, post, or page. 
 
 == Description == 
-The Alpine PhotoTile for Picasa is capable of retrieving photos from a particular Picasa user or gallery. 
+The Alpine PhotoTile for Picasa is capable of retrieving photos from a particular Picasa user or gallery (currently, the plugin can only show public photos). 
 The photos can be linked to the your Picasa page, a specific URL, or to a Lighbox slideshow. 
 Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. 
 This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like. 
