@@ -1,50 +1,405 @@
 <?php
-
-
-class PhotoTileForPicasaBase {  
+/**
+ * AlpineBot Primary
+ * 
+ * Holds paramaters and settings specific to this plugin
+ * Some universal functions, but mostly unique
+ * 
+ */
+class PhotoTileForGooglePlusPrimary {  
 
   /* Set constants for plugin */
-  public $url;
-  public $dir;
-  public $cacheDir;
-  public $ver = '1.2.1';
-  public $vers = '1-2-1';
-  public $domain = 'APTFPICAbyTAP_domain';
-  public $name = 'Alpine PhotoTile for Picasa and Google+';
-  public $desc = 'Add photos from Picasa and Google Plus to your sidebar';
-  public $info = 'http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/';
-  public $wplink = 'http://wordpress.org/extend/plugins/alpine-photo-tile-for-picasa-and-google-plus/';
-  public $page = 'AlpineTile: Picasa <br>and Google Plus';
-  public $hook = 'APTFPICAbyTAP_hook';
-  public $plugins = array('flickr','pinterest','tumblr','instagram');
-
-  public $root = 'AlpinePhotoTiles';
-  public $wjs = 'AlpinePhotoTiles_script';
-  public $wcss = 'AlpinePhotoTiles_style';
-  public $wmenujs = 'AlpinePhotoTiles_menu_script';
-  public $acss = 'AlpinePhotoTiles_admin_style';
-  public $wdesc = 'Add images from Picasa to your sidebar';
+  private $url;
+  private $dir;
+  private $cacheUrl;
+  private $cacheDir;
+  private $ver = '1.2.6';
+  private $vers = '1-2-6';
+  private $domain = 'APTFPICbyTAP_domain';
+ 
+  private $name = 'Alpine PhotoTile for Picasa and Google+';
+  private $info = 'http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/';
+  private $wplink = 'http://wordpress.org/extend/plugins/alpine-photo-tile-for-picasa-and-google-plus/';
+  private $donatelink = 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=eric%40thealpinepress%2ecom&lc=US&item_name=Alpine%20PhotoTile%20for%20GooglePlus%20Donation&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted';
+  private $page = 'AlpineTile: Picasa <br>and Google Plus';
+  private $src = 'picasa';
+  private $hook = 'APTFPICbyTAP_hook';
+  private $plugins = array('instagram','flickr','pinterest','tumblr','smugmug');
+  private $termsofservice = "By using this plugin, you are agreeing to the Picasa Web Albums API <a href='https://developers.google.com/picasa-web/terms' target='_blank'>Terms of Service</a>.";
+  
+  private $root = 'AlpinePhotoTiles';
+  private $wjs = 'AlpinePhotoTiles_script';
+  private $wcss = 'AlpinePhotoTiles_style';
+  private $ajs = 'AlpinePhotoTiles_menu_script';
+  private $acss = 'AlpinePhotoTiles_admin_style';
+  private $wdesc = 'Add images from Picasa and Google+ to your sidebar';
 //####### DO NOT CHANGE #######//
-  public $settings = 'alpine-photo-tile-for-picasa-and-google-plus-settings'; // All lowercase
-  public $short = 'alpine-phototile-for-picasa-and-google-plus';
-  public $id = 'APTFPICA_by_TAP';
+  private $short = 'alpine-phototile-for-picasa-and-google-plus';
+  private $settings = 'alpine-photo-tile-for-picasa-settings'; // All lowercase
+  private $id = 'APTFPIC_by_TAP';
 //#############################//
-  public $expiryInterval = 360; //1*60*60;  1 hour
-  public $cleaningInterval = 1209600; //14*24*60*60;  2 weeks
-
+  private $expiryInterval = 360; //1*60*60;  1 hour
+  private $cleaningInterval = 1209600; //14*24*60*60;  2 weeks
+   
+  // Output Constants
+  private $options = array(); // includes 'rel'
+  private $results = array('photos'=>array(),'feed_found'=>false,'success'=>false,'userlink'=>'','hidden'=>'','message'=>'');
+  private $output = '';
+  private $wid; // Widget id
+  
+  private $userlink = '';
+  private $cacheLimit = 2;
+  private $cacheAttempts = 0;  
+  
   function __construct() {
     $this->url = untrailingslashit( plugins_url( '' , dirname(__FILE__) ) );
     $this->dir = untrailingslashit( plugin_dir_path( dirname(__FILE__) ) );
-    $this->cacheDir = WP_CONTENT_DIR . '/cache/' . $this->settings;
+    
+    $this->cacheUrl = $this->url . '/cache';
+    $this->cacheDir = $this->dir . '/cache';
   }
-  
+/**
+ * Prevent errors by avoiding direct calls to functions
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function do_alpine_method($function, $input=array()){
+    //echo $function.'() called<br>';
+    if( method_exists( $this, $function )){
+      if( empty($input) ){
+        $this->$function();
+      }else{
+        $this->$function($input);
+      }  
+    }
+  }
+/**
+ * Prevent errors by avoiding direct calls to functions
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function get_alpine_method($function, $input=array()){
+    echo $function.'() with return called<br>';
+    if( method_exists( $this, $function )){
+      if( empty($input) ){
+        $return = $this->$function();
+      }else{
+        $return = $this->$function($input);
+      }
+    }
+    if( isset($return) ){
+      return $return;
+    }
+    return null;
+  }   
+/**
+ * Simple get function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function get_private($string){
+    if(isset($this->$string)){
+      return $this->$string;
+    }else{
+      return null;
+    }
+  }
+/**
+ * Simple set function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function set_private($string,$val){
+    $this->$string = $val;
+  }
+/**
+ * Simple set function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function check_private($string){
+    if( !empty($this->$string)){
+      return true;
+    }else{
+      return false;
+    }
+  }
+/**
+ * Simple get function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function get_active_option($string){
+    if(isset($this->options[$string])){
+      return $this->options[$string];
+    }else{
+      return false;
+    }
+  }
+/**
+ * Simple set function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function set_active_option($string,$val){
+    $this->options[$string] = $val;
+  }  
+/**
+ * Simple check function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function check_active_option($string){
+    if(!empty($this->options[$string])){
+      return true;
+    }else{
+      return false;
+    }
+  }  
+/**
+ * Simply get function for search results that returns content
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function get_active_result($string){
+    if(isset($this->results[$string])){
+      return $this->results[$string];
+    }else{
+      return '';
+    }
+  }
+/**
+ * Simple set function
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function set_active_result($string,$val){
+    $this->results[$string] = $val;
+  }
+/**
+ * Simply check function for search results that returns boolean
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function check_active_result($string){
+    if(empty($this->results[$string])){
+      return false;
+    }else{
+      return true;
+    }
+  }
+/**
+ * Function for appending to specific result
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function append_active_result($string,$add){
+    if(isset($this->results[$string])){
+      $this->results[$string] = ($this->results[$string]).$add;
+    }
+  }
+/**
+ * Push photo to results
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function push_photo($array){
+    $this->results['photos'][] = $array;
+  } 
+/**
+ * Get photo information
+ *  
+ * @ Since 1.2.5
+ * 
+ */  
+  function get_photo_info($i,$string){
+    if( isset($this->results['photos'][$i][$string]) ){
+      return $this->results['photos'][$i][$string];
+    }
+    return null;
+  }
+/**
+ * Append to output
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function add($string){
+    $this->output = ($this->output).$string;
+  }  
+//////////////////////////////////////////////////////////////////////////////////////
+/////////////////////      Style/Script Functions        /////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////  
+/**
+ * Register styles and scripts
+ *  
+ * @ Since 1.2.3
+ * @ Updated 1.2.5
+ *
+ */
+  function register_style_and_script(){
+    wp_register_script($this->get_private('wjs'),$this->get_script('widget'),'',$this->get_private('ver'));
+    wp_register_style($this->get_private('wcss'),$this->get_style('widget'),'',$this->get_private('ver'));  
+   
+    $lightbox = $this->get_option('general_lightbox');
+    $prevent = $this->get_option('general_lightbox_no_load');
+    
+    $script = $this->get_script( $lightbox );
+    $css = $this->get_style( $lightbox );
+    
+    if( !empty( $script ) && !empty( $css ) && empty($prevent) ){
+      wp_register_script( $lightbox, $script, '', '', true );
+      wp_register_style( $lightbox.'-stylesheet', $css, false, '', 'screen' );
+    }
+    
+    // Load scripts in header
+    $headerload = $this->get_option('general_load_header');
+    if( !empty($headerload) ){
+      if( !empty( $script ) && !empty( $css ) && empty($prevent) ){
+        wp_enqueue_script( $lightbox );
+        wp_enqueue_style( $lightbox.'-stylesheet' );
+      }
+      wp_enqueue_script($this->get_private('wjs'));      
+      wp_enqueue_style($this->get_private('wcss'));
+    }
+  }
+/**
+ * Enqueue styles and scripts
+ *  
+ * @ Since 1.2.3
+ * @ Updated 1.2.5
+ *
+ */
+  function enqueue_style_and_script(){
+    // Check link destination
+    $link = $this->get_active_option( $this->get_private('src').'_image_link_option' );
+    if( !empty($link) && $link == 'fancybox' ){
+      $lightbox = $this->get_option('general_lightbox');
+      $prevent = $this->get_option('general_lightbox_no_load');
+      if( empty($prevent) ){
+        wp_enqueue_script( $lightbox );
+        wp_enqueue_style( $lightbox.'-stylesheet' );
+      }
+    }
+    wp_enqueue_style( $this->get_private('wcss') );
+    wp_enqueue_script( $this->get_private('wjs') );
+  }     
+/**
+ * Simply get function for JS files
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function get_script($string){
+    if( 'admin' == $string ){
+      return $this->url.'/js/'.$this->ajs.'.js?ver='.$this->ver;
+    }elseif( 'widget' == $string ){
+      return $this->url.'/js/'.$this->wjs.'.js?ver='.$this->ver;
+    }elseif( 'fancybox' == $string ){
+      return $this->url.'/js/fancybox/jquery.fancybox-1.3.4.pack.js?ver=1.3.4';
+    }elseif( 'prettyphoto' == $string ){
+      return $this->url.'/js/prettyPhoto/js/jquery.prettyPhoto.js?ver=3.1.4';
+    }elseif( 'colorbox' == $string ){
+      return $this->url.'/js/colorbox/jquery.colorbox-min.js?ver=1.4.5';	
+    }elseif( 'alpine-fancybox' == $string ){
+      return $this->url.'/js/fancybox-alpine-safemode/jquery.fancyboxForAlpine-1.3.4.pack.js?ver=1.3.4';
+    }
+    return false;
+  }
+/**
+ * Simply get function for CSS files
+ *  
+ * @ Since 1.2.5
+ * 
+ */
+  function get_style($string){
+    if( 'admin' == $string ){
+      return $this->url.'/css/'.$this->acss.'.css?ver='.$this->ver;
+    }elseif( 'widget' == $string ){
+      return $this->url.'/css/'.$this->wcss.'.css?ver='.$this->ver;
+    }elseif( 'fancybox' == $string ){
+      return $this->url.'/js/fancybox/jquery.fancybox-1.3.4.css?ver=1.3.4';
+    }elseif( 'prettyphoto' == $string ){
+      return $this->url.'/js/prettyPhoto/css/prettyPhoto.css?ver=3.1.4';
+    }elseif( 'colorbox' == $string ){
+      return $this->url.'/js/colorbox/colorbox.css?ver=1.3.21';	
+    }elseif( 'alpine-fancybox' == $string ){
+      return $this->url.'/js/fancybox-alpine-safemode/jquery.fancyboxForAlpine-1.3.4.css?ver=1.3.4';
+    }
+    return false;
+  }  
+//////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////      Option Functions      /////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////
+/**
+ *  Simple function to get option setting
+ *  
+ *  @ Since 1.2.0
+ *  @ Updated 1.2.5
+ */
+  function get_option( $option_string ){
+    $options = get_option( $this->settings );
+    // No need to initialize options since defaults are applied as needed
+    $this->options[$option_string] = ( isset($options[$option_string]) ? $options[$option_string] : $this->set_default_option( $options, $option_string ) );
+    return $this->options[$option_string];
+  }
+/**
+ *  Simple function to array of all option settings
+ *  
+ *  @ Since 1.2.0
+ *  @ Updated 1.2.5
+ */
+  function get_all_options(){
+    $options = get_option( $this->settings );
+    $defaults = $this->option_defaults(); 
+    foreach( $defaults as $option_string => $details ){
+      if( !isset($options[$option_string]) && !empty($defaults[$option_string]) && isset($defaults[$option_string]['default']) ){
+        $options[$option_string] = $defaults[$option_string]['default'];
+      }elseif( !isset($options[$option_string]) && !empty($defaults[$option_string]) && !isset($defaults[$option_string]['default']) ){
+        $options[$option_string] = '';
+      }
+    }
+    update_option( $this->settings, $options ); //Unnecessary since options will soon be updated if this fuction was called
+    return $options;
+  }
+/**
+ *  Correctly set and save the option's default setting
+ *  
+ *  @ Since 1.2.0
+ */
+  function set_default_option( $options, $option_string ){
+    $default_options = $this->option_defaults();
+    if( !empty($default_options[$option_string]) && isset($default_options[$option_string]['default']) ){
+      $options[$option_string] = $default_options[$option_string]['default'];
+      update_option( $this->settings, $options );
+      return $options[$option_string];
+    }else{
+      return '';
+    }
+  }
+//////////////////////////////////////////////////////////////////////////////////////
+//////////////////////      Admin Option Functions       /////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////  
 /**
  * Option positions for widget page
  *  
  * @ Since 1.2.0
  * 
  */
-  function widget_positions(){
+  function admin_widget_positions(){
       $options = array(
       'top' => '',
       'left' => 'Picasa Settings',
@@ -53,17 +408,24 @@ class PhotoTileForPicasaBase {
     );
     return $options;
   }
-  function option_positions(){
+  
+/**
+ * Option positions for settings pages
+ *  
+ * @ Since 1.2.0
+ * @ Updated 1.2.5
+ */
+  function admin_option_positions(){
     $positions = array(
       'generator' => array(
-        'left' => array( 'title' => 'Picasa/Google+ Settings'),
+        'left' => array( 'title' => 'Picasa Settings' ),
         'right' => array( 'title' => 'Style Settings' ),
         'bottom' => array( 'title' => 'Format Settings' )
       ),
       'plugin-settings' => array(
-        'top' => array( 'title' => 'Global Style Options', 'description' => "Below are style settings that will be applied to every instance of the plugin. " ),
-        'center' => array( 'title' => 'Hidden Options', 'description' => "Below are additional options that you can choose to enable by checking the box." ),
-        'bottom' => array( 'title' => 'Cache Options' ),
+        'top' => array( 'title' => 'Global Style Options', 'description' => 'Below are style settings that will be applied to every instance of the plugin.' ),
+        'center' => array( 'title' => 'Hidden Options', 'description' => 'Below are additional options that you can choose to enable by checking the box. <br>Once enabled, the option will appear in the Widget Menu and Shortcode Generator.' ),
+        'bottom' => array( 'title' => 'Cache Options', 'description' => 'The plugin is capable of storing the url addresses to the photos in your feed. Please note that the plugin does not store the image files and that if your website has a cache plugin like WP Super Cache or W3 Total Cache, the cache feature of the Alpine PhotoTile will have no effect.')
       )
     );
     return $positions;
@@ -74,7 +436,7 @@ class PhotoTileForPicasaBase {
  * @ Since 1.2.0
  *
  */
-  function settings_page_tabs() {
+  function admin_settings_page_tabs() {
     $tabs = array( 
       'general' => array(
         'name' => 'general',
@@ -84,17 +446,13 @@ class PhotoTileForPicasaBase {
         'name' => 'generator',
         'title' => 'Shortcode Generator',
       ),
-      'preview' => array(
-        'name' => 'preview',
-        'title' => 'Shortcode Preview',
-      ),
       'plugin-settings' => array(
         'name' => 'plugin-settings',
         'title' => 'Plugin Settings',
       )
     );
     return $tabs;
-  }
+  }  
 /**
  * Option Parameters and Defaults
  *  
@@ -144,10 +502,10 @@ class PhotoTileForPicasaBase {
       'picasa_user_id' => array(
         'name' => 'picasa_user_id',
         'short' => 'uid',
-        'title' => 'Picasa User ID: ',
+        'title' => 'Picasa/Google+ User ID: ',
         'type' => 'text',
         'sanitize' => 'nospaces',
-        'description' => 'Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/#finding-ids" target="_blank">theAlpinePress</a> for help finding ID\'s.',
+        'description' => 'Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa/#finding-ids" target="_blank">theAlpinePress</a> for help finding ID\'s.',
         'child' => 'picasa_source', 
         'hidden' => 'global_keyword',
         'widget' => true,
@@ -161,28 +519,29 @@ class PhotoTileForPicasaBase {
         'title' => 'User Album ID : ',
         'type' => 'text',
         'sanitize' => 'nospaces',
-        'description' => 'Albums must be made public. Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/#make-public" target="_blank">theAlpinePress</a> for help. ',
+        'description' => 'Albums must be made public. Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa/#make-public" target="_blank">theAlpinePress</a> for help. ',
         'child' => 'picasa_source', 
         'hidden' => 'global_keyword user_recent',
         'widget' => true,
         'tab' => 'generator',
         'position' => 'left',           
        'default' => ''
-      ),
+      ),  
       'picasa_keyword' => array(
         'name' => 'picasa_keyword',
         'short' => 'keyword',
         'title' => 'Keyword : ',
         'type' => 'text',
         'sanitize' => 'nospaces',
-        'description' => '',
-        'child' => 'picasa_source', 
+        'description' => 'Comma seperated, no spaces',
+        'child' => 'picasa_source',
         'hidden' => 'user_recent user_album',
         'widget' => true,
         'tab' => 'generator',
-        'position' => 'left',            
+        'position' => 'left',
         'default' => ''
-      ), 
+      ),        
+      
       'picasa_image_link_option' => array(
         'name' => 'picasa_image_link_option',
         'short' => 'imgl',
@@ -192,10 +551,6 @@ class PhotoTileForPicasaBase {
           'none' => array(
             'name' => 'none',
             'title' => 'Do not link images'
-          ),
-          'original' => array(
-            'name' => 'original',
-            'title' => 'Link to Image Source'
           ),
           'picasa' => array(
             'name' => 'picasa',
@@ -216,8 +571,8 @@ class PhotoTileForPicasaBase {
         'position' => 'left',
         'parent' => 'AlpinePhotoTiles-parent', 
         'trigger' => 'picasa_image_link_option',
-        'default' => 'fancybox'
-      ),      
+        'default' => 'picasa'
+      ),   
       'custom_lightbox_rel' => array(
         'name' => 'custom_lightbox_rel',
         'short' => 'crel',
@@ -235,7 +590,7 @@ class PhotoTileForPicasaBase {
         'position' => 'left',
         'since' => '1.2.3',
         'default' => ''
-      ),     
+      ),        
       'custom_link_url' => array(
         'name' => 'custom_link_url',
         'title' => 'Custom Link URL : ',
@@ -248,40 +603,42 @@ class PhotoTileForPicasaBase {
         'widget' => true,
         'tab' => 'generator',
         'position' => 'left',
+        'since' => '1.2.3',
         'default' => ''
-      ),
-
+      ), 
       'picasa_display_link' => array(
         'name' => 'picasa_display_link',
         'short' => 'dl',
-        'title' => 'Display link to Picasa page.',
+        'title' => 'Display link to GooglePlus page.',
         'type' => 'checkbox',
         'description' => '',
         'child' => 'picasa_source',
         'hidden' => 'community',
+        'widget' => true,
         'hidden-option' => true,
         'check' => 'hidden_display_link',
-        'widget' => true,
         'tab' => 'generator',
         'position' => 'left',
+        'since' => '1.2.3',
         'default' => ''
       ),    
       'picasa_display_link_text' => array(
         'name' => 'picasa_display_link_text',
         'short' => 'dltext',
-        'title' => 'Link Text : ',
+        'title' => 'Text for display link: ',
         'type' => 'text',
-        'sanitize' => 'nohtml',
+        'sanitize' => 'html',
         'description' => '',
         'child' => 'picasa_source', 
         'hidden' => 'community',
+        'widget' => true,
         'hidden-option' => true,
         'check' => 'hidden_display_link',
-        'widget' => true,
         'tab' => 'generator',
         'position' => 'left',
-        'default' => 'Picasa'
-      ),    
+        'since' => '1.2.3',
+        'default' => 'GooglePlus'
+      ),      
 
       'style_option' => array(
         'name' => 'style_option',
@@ -360,8 +717,8 @@ class PhotoTileForPicasaBase {
         'type' => 'text',
         'sanitize' => 'int',
         'min' => '1',
-        'max' => '200',
-        'description' => 'Max of 200',
+        'max' => '30',
+        'description' => '',
         'child' => 'style_option',
         'hidden' => 'vertical cascade windows',
         'widget' => true,
@@ -415,20 +772,6 @@ class PhotoTileForPicasaBase {
         'position' => 'right',
         'since' => '1.2.3',
         'default' => '600'
-      ),    
-      'picasa_photo_number' => array(
-        'name' => 'picasa_photo_number',
-        'short' => 'num',
-        'title' => 'Number of photos : ',
-        'type' => 'text',
-        'sanitize' => 'int',
-        'min' => '1',
-        'max' => '200',
-        'description' => 'Max of 200, though under 20 is recommended',
-        'widget' => true,
-        'tab' => 'generator',
-        'position' => 'right',
-        'default' => '4'
       ),
       'picasa_photo_size' => array(
         'name' => 'picasa_photo_size',
@@ -437,35 +780,35 @@ class PhotoTileForPicasaBase {
         'type' => 'select',
         'valid_options' => array(
           '110' => array(
-            'name' => '110',
+            'name' => 110,
             'title' => '110px'
           ),
           '220' => array(
-            'name' => '220',
+            'name' => 220,
             'title' => '220px'
           ),
           '320' => array(
-            'name' => '320',
+            'name' => 320,
             'title' => '320px'
           ),
           '400' => array(
-            'name' => '400',
+            'name' => 400,
             'title' => '400px'
           ),
           '512' => array(
-            'name' => '512',
+            'name' => 512,
             'title' => '512px'
           ),
           '640' => array(
-            'name' => '640',
+            'name' => 640,
             'title' => '640px'
           ),
           '800' => array(
-            'name' => '800',
+            'name' => 800,
             'title' => '800px'
           ),
           '1024' => array(
-            'name' => '1024',
+            'name' => 1024,
             'title' => '1024px'
           )  
         ),
@@ -474,6 +817,20 @@ class PhotoTileForPicasaBase {
         'tab' => 'generator',
         'position' => 'right',
         'default' => '320'
+      ),      
+      'picasa_photo_number' => array(
+        'name' => 'picasa_photo_number',
+        'short' => 'num',
+        'title' => 'Number of photos : ',
+        'type' => 'text',
+        'sanitize' => 'int',
+        'min' => '1',
+        'max' => '100',
+        'description' => 'Max of 100, though under 20 is recommended',
+        'widget' => true,
+        'tab' => 'generator',
+        'position' => 'right',
+        'default' => '4'
       ),
       'style_shadow' => array(
         'name' => 'style_shadow',
@@ -549,12 +906,12 @@ class PhotoTileForPicasaBase {
       'widget_max_width' => array(
         'name' => 'widget_max_width',
         'short' => 'max',
-        'title' => 'Max widget width (%) : ',
+        'title' => 'Maximum widget width : ',
         'type' => 'text',
         'sanitize' => 'numeric',
         'min' => '1',
         'max' => '100',
-        'description' => "To reduce the widget width, input a percentage (between 1 and 100). <br> If photos are smaller than widget area, reduce percentage until desired width is achieved.",
+        'description' => "Percentage (%) between 1 and 100.",
         'widget' => true,
         'tab' => 'generator',
         'position' => 'bottom',
@@ -563,7 +920,7 @@ class PhotoTileForPicasaBase {
       'widget_disable_credit_link' => array(
         'name' => 'widget_disable_credit_link',
         'short' => 'nocredit',
-        'title' => 'Disable the tiny "TAP" link in the bottom left corner, though I have spent several months developing this plugin and would appreciate the credit.',
+        'title' => 'Disable the tiny "TAP" link in the bottom left corner, though I would appreciate the credit.',
         'type' => 'checkbox',
         'description' => '',
         'widget' => true,
@@ -571,6 +928,16 @@ class PhotoTileForPicasaBase {
         'position' => 'bottom',
         'default' => ''
       ), 
+      'general_disable_right_click' => array(
+        'name' => 'general_disable_right_click',
+        'title' => 'Disable Right-Click: ',
+        'type' => 'checkbox',
+        'description' => 'Prevent visitors from right-clicking and downloading images.',
+        'since' => '1.2.4',
+        'tab' => 'plugin-settings',
+        'position' => 'top',
+        'default' => ''
+      ),
       'general_loader' => array(
         'name' => 'general_loader',
         'title' => 'Disable Loading Icon: ',
@@ -592,7 +959,37 @@ class PhotoTileForPicasaBase {
         'tab' => 'plugin-settings',
         'position' => 'top',
         'default' => '#64a2d8'
+      ),
+      'general_hide_message' => array(
+        'name' => 'general_hide_message',
+        'title' => 'Hide error messages: ',
+        'type' => 'checkbox',
+        'description' => 'Prevent the plugin from displaying error messages.',
+        'since' => '1.2.1',
+        'tab' => 'plugin-settings',
+        'position' => 'top',
+        'default' => ''
       ), 
+      'general_load_header' => array(
+        'name' => 'general_load_header',
+        'title' => 'Load Styles and <br>Scripts in Header: ',
+        'type' => 'checkbox',
+        'description' => 'For themes without a wp_footer() call, load the plugin CSS styles and JS scripts in the head of every page.',
+        'since' => '1.2.5',
+        'tab' => 'plugin-settings',
+        'position' => 'top',
+        'default' => ''
+      ),       
+      'general_lightbox_no_load' => array(
+        'name' => 'general_lightbox_no_load',
+        'title' => 'Prevent Lightbox Loading: ',
+        'type' => 'checkbox',
+        'description' => 'Already using the below jQuery Lightbox Plugin? Prevent this plugin from loading it again.',
+        'tab' => 'plugin-settings',
+        'position' => 'top',
+        'since' => '1.2.3',
+        'default' => ''
+      ),      
       'general_lightbox' => array(
         'name' => 'general_lightbox',
         'title' => 'Choose jQuery Lightbox Plugin : ',
@@ -620,21 +1017,11 @@ class PhotoTileForPicasaBase {
         'since' => '1.2.3',
         'default' => 'alpine-fancybox'
       ),
-      'general_lightbox_no_load' => array(
-        'name' => 'general_lightbox_no_load',
-        'title' => 'Prevent Lightbox Loading: ',
-        'type' => 'checkbox',
-        'description' => 'Already using the above lighbox alternative? Prevent this plugin from loading it again.',
-        'tab' => 'plugin-settings',
-        'position' => 'top',
-        'since' => '1.2.3',
-        'default' => ''
-      ), 
       'general_lightbox_params' => array(
         'name' => 'general_lightbox_params',
         'title' => 'Custom Lightbox Parameters:',
         'type' => 'textarea',
-        'sanitize' => 'css',
+        'sanitize' => 'stripslashes',
         'description' => 'Add custom parameters to the lighbox call.',
         'section' => 'settings',
         'tab' => 'general',
@@ -643,31 +1030,22 @@ class PhotoTileForPicasaBase {
         'position' => 'top',
         'default' => ''
       ), 
-      'general_load_header' => array(
-        'name' => 'general_load_header',
-        'title' => 'Always Load Styles and Scripts in Header: ',
-        'type' => 'checkbox',
-        'description' => 'For themes without wp_footer(). Requires that styles and scripts be loaded on every page.',
-        'since' => '1.2.3',
-        'tab' => 'plugin-settings',
-        'position' => 'top',
-        'default' => ''
-      ), 
+
       'hidden_display_link' => array(
         'name' => 'hidden_display_link',
         'title' => 'Link Below Widget: ',
         'type' => 'checkbox',
-        'description' => 'Add an option to place a link with custom text below widget display.',
+        'description' => 'Place a link with custom text below widget display.',
         'since' => '1.2.3',
         'tab' => 'plugin-settings',
         'position' => 'center',
-        'default' => true
+        'default' => ''
       ), 
       'hidden_widget_alignment' => array(
         'name' => 'hidden_widget_alignment',
         'title' => 'Photo Alignment: ',
         'type' => 'checkbox',
-        'description' => 'Add an option to align photos to the left, right, or center.',
+        'description' => 'Align photos to the left, right, or center.',
         'since' => '1.2.3',
         'tab' => 'plugin-settings',
         'position' => 'center',
@@ -677,7 +1055,7 @@ class PhotoTileForPicasaBase {
         'name' => 'hidden_lightbox_custom_rel',
         'title' => 'Custom "rel" for Lightbox: ',
         'type' => 'checkbox',
-        'description' => 'Add an option to set custom "rel" to widget options.',
+        'description' => 'Set custom "rel" to widget options.',
         'since' => '1.2.3',
         'tab' => 'plugin-settings',
         'position' => 'center',
@@ -687,7 +1065,7 @@ class PhotoTileForPicasaBase {
         'name' => 'cache_disable',
         'title' => 'Disable feed caching: ',
         'type' => 'checkbox',
-        'description' => '',
+        'description' => 'Fetch the photo feed each time someone visits your website.',
         'since' => '1.1',
         'tab' => 'plugin-settings',
         'position' => 'bottom',
@@ -703,13 +1081,12 @@ class PhotoTileForPicasaBase {
         'since' => '1.1',
         'tab' => 'plugin-settings',
         'position' => 'bottom',
-        'default' => '3'
+        'default' => '4'
       ), 
+      
     );
     return $options;
   }
-  
-// END
 }
 
 ?>

@@ -1,25 +1,25 @@
-=== Alpine PhotoTile for Picasa and Google Plus ===
+=== Alpine PhotoTile for Google Plus and Picasa  ===
 Contributors: theAlpinePress
-Donate link: thealpinepress.com
-Tags: photos, picasa, google, plus, photostream, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
+Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=eric%40thealpinepress%2ecom&lc=US&item_name=Alpine%20PhotoTile%20for%20Google%20Plus%20Donation&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
+Tags: photos, picasa, photostream, stylish, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
 Requires at least: 2.8
-Tested up to: 3.5
-Stable tag: 1.2.3.2
+Tested up to: 3.5.2
+Stable tag: 1.2.6
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Stylish and compact plugin for displaying Picasa and Google Plus images in a sidebar, post, or page. 
 
 == Description == 
-The Alpine PhotoTile for Picasa is capable of retrieving photos from a particular Picasa user or gallery (currently, the plugin can only show public photos). 
+The Alpine PhotoTile for Google Plus and Picasa  is capable of retrieving photos from a particular Picasa user or gallery (currently, the plugin can only show public photos). 
 The photos can be linked to the your Picasa page, a specific URL, or to a Lighbox slideshow. 
 Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. 
 This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like. 
-A full description and demonstration is available at [the Alpine Press](http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/ "Plugin Demo").
+A full description and demonstration is available at [the Alpine Press](http://thealpinepress.com/alpine-phototile-for-picasa/ "Plugin Demo").
 
 **Features:**
 
-* Display Picasa and Google Plus images in a sidebar, post, or page
+* Display GooglePlus images in a sidebar, post, or page
 * Multiple styles to allow for customization
 * Lighbox feature for interactive slideshow (Fancybox, prettyBox, or ColorBox)
 * Simple instructions
@@ -37,7 +37,7 @@ A full description and demonstration is available at [the Alpine Press](http://t
 
 == Installation ==
 
-1. Upload `alpine-photo-tile-for-picasa-and-google-plus` folder to the `/wp-content/plugins/` directory
+1. Upload `alpine-photo-tile-for-picasa` folder to the `/wp-content/plugins/` directory
 2. Activate the plugin through the 'Plugins' menu in WordPress
 3. Use the widget like any other widget.
 4. Customize based on your preference.
@@ -129,14 +129,14 @@ The plugin caches or stores the Picasa feed for three hours (see Caching above).
 As of version 1.2.0, up to 200 photos can be retrieved and displayed.
 
 
-*If you have any more questions, please leave a message at [the Alpine Press](http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/ "Plugin Demo").
+*If you have any more questions, please leave a message at [the Alpine Press](http://thealpinepress.com/alpine-phototile-for-picasa/ "Plugin Demo").
 I am a one-man development team and I distribute these plugins for free, so please be patient with me.*
 
 
 == Changelog ==
 
 = 1.2.0 =
-* Rebuilt Alpine Photo series to work with Picasa
+* Rebuilt Alpine Photo series to work with Picasa and Google Plus
 * Rebuilt plugin structure into OBJECT
 * Combined all Alpine Photo Tiles scripts and styles into identical files
 * Improved IE 7 compatibility
@@ -163,3 +163,31 @@ I am a one-man development team and I distribute these plugins for free, so plea
 
 = 1.2.3.1 =
 * Fixed cache retrieval
+
+= 1.2.4 =
+* Restructured plugin objects and reassinged functions
+* Object oriented message, hidden, etc.
+* Added option to disable right-clicking on images
+* Added updateGlobalOptions and removed individual option calls
+* Added donate button
+* Fixed lightbox param option
+
+= 1.2.5 =
+* Added fallback to dynamic style and script loading using jQuery
+* Various small fixes
+* Moved cache location
+* Updated ColorBox plugin
+* Set Object params to private and implemeted set, check, and get function
+* Implemeted do_alpine_method call
+* Created active options and results functions
+
+= 1.2.6 =
+* Fixed jQuery bug (Removed all <> tags from inline scripts)
+* Add stripslashes text sanitization
+* Changed lightbox parameters option from CSS to stripslashes sanitization
+
+= TODO =
+* Add authkey to add semi-public images
+* Add caption to display
+* Rebuild jQuery display
+* Check with Contact Form 7

@@ -1,16 +1,32 @@
 <?php
 /*
-Plugin Name: Alpine PhotoTile for Picasa and Google Plus
-Plugin URI: http://thealpinepress.com/alpine-phototile-for-picasa-and-google-plus/
-Description: The Alpine PhotoTile for Picasa and Google Plus is capable of retrieving photos from a particular user or album. The photos can be linked to the your Picasa page, a specific URL, or to a Fancybox slideshow. Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like.
-Version: 1.2.3.2
+Plugin Name: Alpine PhotoTile for Google Plus and Picasa
+Plugin URI: http://thealpinepress.com/alpine-phototile-for-picasa/
+Description: The Alpine PhotoTile for Picasa and Google Plus is capable of retrieving public photos from a particular user or gallery. The photos can be linked to the your Picasa page, a specific URL, or to a Lightbox slideshow. Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like.
+Version: 1.2.6
 Author: the Alpine Press
 Author URI: http://thealpinepress.com/
 License: GNU General Public License v3.0
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-*/
 
+Copyright 2013  Eric Burger
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License, version 3, as 
+  published by the Free Software Foundation.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+    
+*/
+  
   // Prevent direct access to the plugin 
   if (!defined('ABSPATH')) {
     exit(__( "Sorry, you are not allowed to access this page directly." ));
@@ -25,76 +41,69 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
     define( 'WP_PLUGIN_URL', WP_CONTENT_URL. '/plugins' );
   if ( ! defined( 'WP_PLUGIN_DIR' ) )
     define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
-
-/**
- * Clear cache upon deactivation
- *  
- * @since 1.0.1
- *
- */
-  function APTFPICAbyTAP_remove(){
-    if ( class_exists( 'PhotoTileForPicasaBot' ) ) {
-      $bot = new PhotoTileForPicasaBot();
-      $bot->clearAllCache();
-    }
-  }
-  register_deactivation_hook( __FILE__, 'APTFPICAbyTAP_remove' );
+  
 /**
  * Register Widget
  *  
- * @since 1.0.0
- *
+ * @ Since 1.0.0
+ * @ Updated 1.2.5
  */
-  function APTFPICAbyTAP_widget_register() {register_widget( 'Alpine_PhotoTile_for_Picasa_and_Google_Plus' );}
-  add_action('widgets_init','APTFPICAbyTAP_widget_register');
+  function APTFPICbyTAP_widget_register() {
 
-  include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/alpinebot-primary.php' );
-  include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/alpinebot-secondary.php' );
-  include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/alpinebot-tertiary.php' );
-  include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/plugin-widget.php' );
-  include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/plugin-shortcode.php' );
+    include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/alpinebot-primary.php' );
+    include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/alpinebot-display.php' );
+    if( is_admin() ){
+      include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/alpinebot-admin.php' );
+    }
+    include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/plugin-widget.php' );
+    include_once( WP_PLUGIN_DIR.'/'.basename(dirname(__FILE__)).'/gears/plugin-shortcode.php' );
+    register_widget( 'Alpine_PhotoTile_for_GooglePlus' );
+  }
+  add_action('widgets_init','APTFPICbyTAP_widget_register');
 
+
+  
 /**
  * Load Admin JS and CSS
  *  
  * @ Since 1.0.0
  * @ Updated 1.2.3
  */
-	function APTFPICAbyTAP_admin_widget_script($hook){ 
-    $bot = new PhotoTileForPicasaBot();
-    wp_register_script($bot->wmenujs,$bot->url.'/js/'.$bot->wmenujs.'.js','',$bot->ver); 
-    wp_register_style($bot->acss,$bot->url.'/css/'.$bot->acss.'.css','',$bot->ver);
+	function APTFPICbyTAP_admin_widget_script($hook){ 
+    $bot = new PhotoTileForGooglePlusBot(); // Bot needed to clean cache
+    wp_register_script($bot->get_private('ajs'),$bot->get_script('admin'),'',$bot->get_private('ver') ); 
+    wp_register_style($bot->get_private('acss'),$bot->get_style('admin'),'',$bot->get_private('ver') );
     
-    $bot->register_style_and_script(); // Register widget styles and scripts
+    $bot->do_alpine_method('register_style_and_script'); // Register widget styles and scripts
         
     if( 'widgets.php' != $hook ){ return; }
     
     wp_enqueue_script( 'jquery');
-    wp_enqueue_script($bot->wmenujs);
-    wp_enqueue_style($bot->acss);
-    add_action('admin_print_footer_scripts', 'APTFPICAbyTAP_menu_toggles');
+    wp_enqueue_script($bot->get_private('ajs'));
+    wp_enqueue_style($bot->get_private('acss'));
+    add_action('admin_print_footer_scripts', 'APTFPICbyTAP_menu_toggles');
     
     // Only admin can trigger two week cache cleaning by visiting widgets.php
     $disablecache = $bot->get_option( 'cache_disable' );
-    if ( !$disablecache ) { $bot->cleanCache(); }
+    if ( empty($disablecache) ) { $bot->do_alpine_method('cleanCache'); }
 	}
-  add_action('admin_enqueue_scripts', 'APTFPICAbyTAP_admin_widget_script'); 
+  add_action('admin_enqueue_scripts', 'APTFPICbyTAP_admin_widget_script'); 
   
 /**
  * Load JS to activate menu toggles
  *  
- * @since 1.0.0
+ * @ Since 1.0.0
  *
  */
-  function APTFPICAbyTAP_menu_toggles(){
-    $bot = new PhotoTileForPicasaBot();
+  function APTFPICbyTAP_menu_toggles(){
+    $bot = new PhotoTileForGooglePlusPrimary();
     ?>
     <script type="text/javascript">
     if( jQuery().AlpineWidgetMenuPlugin  ){
       jQuery(document).ready(function(){
-        jQuery('.AlpinePhotoTiles-container.<?php echo $bot->domain;?> .AlpinePhotoTiles-parent').AlpineWidgetMenuPlugin();
+        jQuery('.AlpinePhotoTiles-container.<?php echo $bot->get_private('domain');?> .AlpinePhotoTiles-parent').AlpineWidgetMenuPlugin();
         jQuery(document).ajaxComplete(function() {
-          jQuery('.AlpinePhotoTiles-container.<?php echo $bot->domain;?> .AlpinePhotoTiles-parent').AlpineWidgetMenuPlugin();
+          jQuery('.AlpinePhotoTiles-container.<?php echo $bot->get_private('domain');?> .AlpinePhotoTiles-parent').AlpineWidgetMenuPlugin();
         });
       });
     }
@@ -104,20 +113,23 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
 /**
  * Load JS to highlight and select shortcode upon hovering
  *  
- * @since 1.0.0
- *
+ * @ Since 1.0.0
+ * @ Updated 1.2.4
  */
-  function APTFPICAbyTAP_shortcode_select(){
-    $bot = new PhotoTileForPicasaBot();
+  function APTFPICbyTAP_shortcode_select(){
+    $bot = new PhotoTileForGooglePlusPrimary();
     ?>
     <script type="text/javascript">
-      jQuery(".auto_select").mouseenter(function(){
-        jQuery(this).select();
-      }); 
-      var div = jQuery('#<?php echo $bot->settings; ?>-shortcode');
-      if( div && div.offset() ){
-        jQuery("html,body").animate({ scrollTop: (40) }, 2000);
-      } 
+    jQuery(".auto_select").mouseenter(function(){
+      jQuery(this).select();
+    }); 
+    var div = jQuery('#<?php echo $bot->get_private('settings'); ?>-shortcode #shortcode');
+    var contain = jQuery('.AlpinePhotoTiles_container_class');
+    if( div.length && !contain.length ){
+      for(i=0;i<3;i++) {
+        div.animate({'opacity':'.7'}, 500).animate({'opacity':'1'}, 500);
+      }
+    } 
     </script>  
     <?php
   }
@@ -128,53 +140,87 @@ License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * @ Since 1.0.0
  * @ Updated 1.2.3
  */
-  function APTFPICAbyTAP_enqueue_display_scripts() {
-    $bot = new PhotoTileForPicasaBot();
+  function APTFPICbyTAP_enqueue_display_scripts() {
+    $bot = new PhotoTileForGooglePlusPrimary();
     wp_enqueue_script( 'jquery' );
 
-    $bot->register_style_and_script(); // Register widget styles and scripts
+    $bot->do_alpine_method('register_style_and_script'); // Register widget styles and scripts
   }
-  add_action('wp_enqueue_scripts', 'APTFPICAbyTAP_enqueue_display_scripts');
+  add_action('wp_enqueue_scripts', 'APTFPICbyTAP_enqueue_display_scripts');
   
 /**
  * Setup the Theme Admin Settings Page
  *
  * @ Since 1.0.1 
  */
-  function APTFPICAbyTAP_admin_options() {
-    $bot = new PhotoTileForPicasaBot();
-    $page = add_options_page(__($bot->page), __($bot->page), 'manage_options', $bot->settings , 'APTFPICAbyTAP_admin_options_page');
+  function APTFPICbyTAP_admin_options() {
+    $bot = new PhotoTileForGooglePlusPrimary();
+    $page = add_options_page(__($bot->get_private('page')), __($bot->get_private('page')), 'manage_options', $bot->get_private('settings') , 'APTFPICbyTAP_admin_options_page');
     /* Using registered $page handle to hook script load */
-    add_action('admin_print_scripts-' . $page, 'APTFPICAbyTAP_enqueue_admin_scripts');
+    add_action('admin_print_scripts-' . $page, 'APTFPICbyTAP_enqueue_admin_scripts');
   }
   // Load the Admin Options page
-  add_action('admin_menu', 'APTFPICAbyTAP_admin_options');
+  add_action('admin_menu', 'APTFPICbyTAP_admin_options');
   
 /**
  * Enqueue admin scripts (and related stylesheets)
  *
  * @ Since 1.0.0
  */
-  function APTFPICAbyTAP_enqueue_admin_scripts() {
-    $bot = new PhotoTileForPicasaBot();
+  function APTFPICbyTAP_enqueue_admin_scripts() {
+    $bot = new PhotoTileForGooglePlusPrimary();
     wp_enqueue_script( 'jquery' );
     wp_enqueue_style( 'farbtastic' );
-    wp_enqueue_script( 'farbtastic' );    
-    wp_enqueue_script($bot->wmenujs);
-    wp_enqueue_style($bot->acss);
-    add_action('admin_print_footer_scripts', 'APTFPICAbyTAP_menu_toggles'); 
-    add_action('admin_print_footer_scripts', 'APTFPICAbyTAP_shortcode_select'); 
+    wp_enqueue_script( 'farbtastic' );
+    wp_enqueue_script($bot->get_private('ajs'));
+    wp_enqueue_style($bot->get_private('acss'));
+    add_action('admin_print_footer_scripts', 'APTFPICbyTAP_menu_toggles'); 
+    add_action('admin_print_footer_scripts', 'APTFPICbyTAP_shortcode_select'); 
   }
 /**
  * Settings Page Markup
  *
  * @ Since 1.0.2
  */
-  function APTFPICAbyTAP_admin_options_page() { 
+  function APTFPICbyTAP_admin_options_page() { 
     if (!current_user_can('manage_options')) {
       wp_die( __('You do not have sufficient permissions to access this page.') );
     }
-    $bot = new PhotoTileForPicasaBot();
-    $bot->build_settings_page();
+    $adminbot = new PhotoTileForGooglePlusAdmin();
+    $adminbot->do_alpine_method('admin_build_settings_page');
   }  
-?>
+/**
+ * Settings link on plugin page
+ *
+ * @ Since 1.2.5
+ */
+  function APTFPICbyTAP_plugin_settings_link($links) { 
+    $bot = new PhotoTileForGooglePlusPrimary();
+    $api_link = '<a href="options-general.php?page='.$bot->get_private('settings').'&tab=add">API Key</a>'; 
+    array_push($links, $api_link);
+    $generator_link = '<a href="options-general.php?page='.$bot->get_private('settings').'&tab=generator">Shortcode</a>'; 
+    array_push($links, $generator_link); 
+    $settings_link = '<a href="options-general.php?page='.$bot->get_private('settings').'&tab=plugin-settings">Settings</a>'; 
+    array_push($links, $settings_link);     
+    return $links; 
+  }
+  $plugin = plugin_basename(__FILE__); 
+  add_filter("plugin_action_links_$plugin", 'APTFPICbyTAP_plugin_settings_link' );
+
+/**
+ * Meta link on plugin page
+ *
+ * @ Since 1.2.5
+ */
+  function APTFPICbyTAP_plugin_meta_links($links, $file) {  
+    $plugin = plugin_basename(__FILE__);
+    $bot = new PhotoTileForGooglePlusPrimary();
+    if ($file == $plugin){ // only for this plugin  
+      $donate_link =  '<a href="'.$bot->get_private('donatelink').'" target="_blank">' . __('Donate') . '</a>';
+      array_push($links, $donate_link);
+    }
+    return $links;  
+  }  
+  add_filter( 'plugin_row_meta', 'APTFPICbyTAP_plugin_meta_links', 10, 2 );  
+  
+  ?>
