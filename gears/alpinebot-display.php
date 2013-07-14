@@ -377,7 +377,7 @@ class PhotoTileForGooglePlusBotTertiary extends PhotoTileForGooglePlusBotSeconda
         'vers' => $this->get_private('vers'),
         'src' => (isset($picasa_options['picasa_source'])?$picasa_options['picasa_source']:''),
         'uid' => (isset($picasa_options['picasa_user_id'])?$picasa_options['picasa_user_id']:''),
-        'alb' => (isset($picasa_options['picasa_album'])?$picasa_options['picasa_album']:''),
+        'alb' => (isset($picasa_options['picasa_user_album'])?$picasa_options['picasa_user_album']:''),
         'key' => (isset($picasa_options['picasa_keyword'])?$picasa_options['picasa_keyword']:''),
         'num' => (isset($picasa_options['picasa_photo_number'])?$picasa_options['picasa_photo_number']:''),
         'link' => (isset($picasa_options['picasa_display_link'])?$picasa_options['picasa_display_link']:''),
@@ -445,7 +445,7 @@ class PhotoTileForGooglePlusBotTertiary extends PhotoTileForGooglePlusBotSeconda
         $request = 'http://picasaweb.google.com/data/feed/api/user/'.$picasa_uid.'/albumid/'.$picasa_album.'?kind=photo&alt='.$format.'&kind=photo&max-results='.$num.'&thumbsize='.$size.'u&imgmax=1024u';
       break;
       case 'global_keyword':
-        $picasa_keyword = empty($picasa_options['picasa_keyword']) ? '' : $picasa_options['picasakeyword'];
+        $picasa_keyword = empty($picasa_options['picasa_keyword']) ? '' : $picasa_options['picasa_keyword'];
         $request = 'http://picasaweb.google.com/data/feed/api/all?kind=photo&alt='.$format.'&q='.$picasa_keyword.'&max-results='.$num.'&thumbsize='.$size.'u&imgmax=1024u';
       break;
     }

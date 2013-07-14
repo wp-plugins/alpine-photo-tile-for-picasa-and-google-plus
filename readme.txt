@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=eric%
 Tags: photos, picasa, photostream, stylish, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
 Requires at least: 2.8
 Tested up to: 3.5.2
-Stable tag: 1.2.6
+Stable tag: 1.2.6.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -185,6 +185,7 @@ I am a one-man development team and I distribute these plugins for free, so plea
 * Fixed jQuery bug (Removed all <> tags from inline scripts)
 * Add stripslashes text sanitization
 * Changed lightbox parameters option from CSS to stripslashes sanitization
+* Small fix: Album id in cache key and keyword filter
 
 = TODO =
 * Add authkey to add semi-public images
