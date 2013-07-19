@@ -2,8 +2,8 @@
 /*
 Plugin Name: Alpine PhotoTile for Google Plus and Picasa
 Plugin URI: http://thealpinepress.com/alpine-phototile-for-picasa/
-Description: The Alpine PhotoTile for Picasa and Google Plus is capable of retrieving public photos from a particular user or gallery. The photos can be linked to the your Picasa page, a specific URL, or to a Lightbox slideshow. Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like.
-Version: 1.2.6.1
+Description: The Alpine PhotoTile for Picasa and Google Plus is capable of retrieving public photos from a particular Picasa user, a public album, a semi-private album, or a keyword. The photos can be linked to the your Picasa page, a specific URL, or to a Lightbox slideshow. Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like.
+Version: 1.2.6.2
 Author: the Alpine Press
 Author URI: http://thealpinepress.com/
 License: GNU General Public License v3.0

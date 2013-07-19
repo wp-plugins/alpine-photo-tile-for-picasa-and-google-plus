@@ -378,6 +378,7 @@ class PhotoTileForGooglePlusBotTertiary extends PhotoTileForGooglePlusBotSeconda
         'src' => (isset($picasa_options['picasa_source'])?$picasa_options['picasa_source']:''),
         'uid' => (isset($picasa_options['picasa_user_id'])?$picasa_options['picasa_user_id']:''),
         'alb' => (isset($picasa_options['picasa_user_album'])?$picasa_options['picasa_user_album']:''),
+        'authkey' => (isset($picasa_options['picasa_auth_key'])?$picasa_options['picasa_auth_key']:''),
         'key' => (isset($picasa_options['picasa_keyword'])?$picasa_options['picasa_keyword']:''),
         'num' => (isset($picasa_options['picasa_photo_number'])?$picasa_options['picasa_photo_number']:''),
         'link' => (isset($picasa_options['picasa_display_link'])?$picasa_options['picasa_display_link']:''),
@@ -412,7 +413,7 @@ class PhotoTileForGooglePlusBotTertiary extends PhotoTileForGooglePlusBotSeconda
       if( $this->check_active_result('feed_found') ){
         $this->append_active_result('message','- Picasa feed was successfully retrieved, but no photos found.<br> If you are using the "User Recent" option, try a specific album instead.');
       }else{
-        $this->append_active_result('message','- Please recheck your ID(s).');
+        $this->append_active_result('message','- Please recheck your ID(s). <br>- If you are showing a private album, check that the "Retrieve Photos From" option is set to "User\'s Private Album" and that the Authorization Key is correct.');
       }
     }
     
@@ -425,6 +426,7 @@ class PhotoTileForGooglePlusBotTertiary extends PhotoTileForGooglePlusBotSeconda
  *  Function for forming GooglePlus request
  *  
  *  @ Since 1.2.4
+ *  @ Updated 1.2.6
  */ 
   function get_picasa_request($format='json'){
     $picasa_options = $this->get_private('options');
@@ -444,6 +446,12 @@ class PhotoTileForGooglePlusBotTertiary extends PhotoTileForGooglePlusBotSeconda
         $picasa_album = empty($picasa_options['picasa_user_album']) ? '' : $picasa_options['picasa_user_album'];
         $request = 'http://picasaweb.google.com/data/feed/api/user/'.$picasa_uid.'/albumid/'.$picasa_album.'?kind=photo&alt='.$format.'&kind=photo&max-results='.$num.'&thumbsize='.$size.'u&imgmax=1024u';
       break;
+      case 'private_user_album':
+        $auth_key = empty($picasa_options['picasa_auth_key']) ? '' : $picasa_options['picasa_auth_key'];
+        $auth_key = 'Gv1sRg'.( str_replace('Gv1sRg','',$auth_key) ); // If used Google+ to find key, doesn't include Gv1sRg
+        $picasa_album = empty($picasa_options['picasa_user_album']) ? '' : $picasa_options['picasa_user_album'];
+        $request = 'http://picasaweb.google.com/data/feed/api/user/'.$picasa_uid.'/albumid/'.$picasa_album.'?kind=photo&alt='.$format.'&kind=photo&authkey='.$auth_key.'&max-results='.$num.'&thumbsize='.$size.'u&imgmax=1024u';
+      break;      
       case 'global_keyword':
         $picasa_keyword = empty($picasa_options['picasa_keyword']) ? '' : $picasa_options['picasa_keyword'];
         $request = 'http://picasaweb.google.com/data/feed/api/all?kind=photo&alt='.$format.'&q='.$picasa_keyword.'&max-results='.$num.'&thumbsize='.$size.'u&imgmax=1024u';

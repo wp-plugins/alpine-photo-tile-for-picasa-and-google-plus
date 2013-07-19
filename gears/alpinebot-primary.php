@@ -457,7 +457,7 @@ class PhotoTileForGooglePlusPrimary {
  * Option Parameters and Defaults
  *  
  * @ Since 1.0.0
- * @ Updated 1.2.3
+ * @ Updated 1.2.6
  */
   function option_defaults(){
     $options = array(
@@ -480,12 +480,16 @@ class PhotoTileForGooglePlusPrimary {
         'valid_options' => array(
           'user_recent' => array(
             'name' => 'user_recent',
-            'title' => 'User Recent'
+            'title' => 'User\'s Public Feed'
           ),
           'user_album' => array(
             'name' => 'user_album',
-            'title' => 'User Album'
+            'title' => 'User\'s Public Album'
           ),
+          'private_user_album' => array(
+            'name' => 'private_user_album',
+            'title' => 'User\'s Private Album'
+          ),          
           'global_keyword' => array(
             'name' => 'global_keyword',
             'title' => 'Keyword'
@@ -519,7 +523,7 @@ class PhotoTileForGooglePlusPrimary {
         'title' => 'User Album ID : ',
         'type' => 'text',
         'sanitize' => 'nospaces',
-        'description' => 'Albums must be made public. Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa/#make-public" target="_blank">theAlpinePress</a> for help. ',
+        'description' => 'Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa/#make-public" target="_blank">theAlpinePress</a> for help making albums public. ',
         'child' => 'picasa_source', 
         'hidden' => 'global_keyword user_recent',
         'widget' => true,
@@ -527,6 +531,21 @@ class PhotoTileForGooglePlusPrimary {
         'position' => 'left',           
        'default' => ''
       ),  
+      'picasa_auth_key' => array(
+        'name' => 'picasa_auth_key',
+        'short' => 'authkey',
+        'title' => 'Authorization Key : ',
+        'type' => 'text',
+        'sanitize' => 'nospaces',
+        'description' => 'Visit <a href="http://thealpinepress.com/alpine-phototile-for-picasa/#finding-ids" target="_blank">theAlpinePress</a> for help finding the authorization key. ',
+        'child' => 'picasa_source', 
+        'hidden' => 'global_keyword user_recent user_album',
+        'widget' => true,
+        'tab' => 'generator',
+        'position' => 'left',           
+       'default' => ''
+      ), 
+      
       'picasa_keyword' => array(
         'name' => 'picasa_keyword',
         'short' => 'keyword',
@@ -535,7 +554,7 @@ class PhotoTileForGooglePlusPrimary {
         'sanitize' => 'nospaces',
         'description' => 'Comma seperated, no spaces',
         'child' => 'picasa_source',
-        'hidden' => 'user_recent user_album',
+        'hidden' => 'user_recent user_album private_user_album',
         'widget' => true,
         'tab' => 'generator',
         'position' => 'left',
