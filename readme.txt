@@ -3,8 +3,8 @@ Contributors: theAlpinePress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=eric%40thealpinepress%2ecom&lc=US&item_name=Alpine%20PhotoTile%20for%20Google%20Plus%20Donation&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: photos, picasa, photostream, stylish, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
 Requires at least: 2.8
-Tested up to: 3.5.2
-Stable tag: 1.2.6.2
+Tested up to: 3.8
+Stable tag: 1.2.6.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -190,7 +190,15 @@ I am a one-man development team and I distribute these plugins for free, so plea
 = 1.2.6.2 =
 * Added authkey for semi-private photo albums. Includes filter to add 'Gv1sRg' to Google+ authkeys. 
 
+= 1.2.6.3  =
+* Check compatibility with WP 3.8
+* Small CSS changes (Padding and hover white background)
+* Replaced deprecated jQuery APIs  ( .load() and .browser )
+* Updated prettyPhoto and colorbox
+
+
 = TODO =
+* Change to FancyBox 2
 * Add caption to display
 * Rebuild jQuery display
 * Check with Contact Form 7

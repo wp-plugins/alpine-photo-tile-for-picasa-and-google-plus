@@ -689,7 +689,7 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
  *  Function for printing vertical style
  *  
  *  @ Since 0.0.1
- *  @ Updated 1.2.6
+ *  @ Updated 1.2.6.3
  */
   function display_vertical(){
     $this->set_private('out',''); // Clear any output;
@@ -728,7 +728,7 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
     if( !empty($opts['style_shadow']) || !empty($opts['style_border']) || !empty($opts['style_highlight'])  ){
       $this->add("
 <script>
-  jQuery(window).load(function() {
+  jQuery(window).on('load',function() {
     if( jQuery().AlpineAdjustBordersPlugin ){
       jQuery('#".$this->get_private('wid')."-vertical-parent').AlpineAdjustBordersPlugin({
         highlight:'".$highlight."'
@@ -757,7 +757,7 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
  *  Function for printing cascade style
  *  
  *  @ Since 0.0.1
- *  @ Updated 1.2.6
+ *  @ Updated 1.2.6.3
  */
   function display_cascade(){
     $this->set_private('out',''); // Clear any output;
@@ -805,8 +805,8 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
     if( !empty($opts['style_shadow']) || !empty($opts['style_border']) || !empty($opts['style_highlight'])  ){
       $this->add("
 <script>
-  jQuery(window).load(function() {
-    if(jQuery().AlpineAdjustBordersPlugin ){
+  jQuery(window).on('load',function() {
+    if( jQuery().AlpineAdjustBordersPlugin ){
       jQuery('#".$this->get_private('wid')."-cascade-parent').AlpineAdjustBordersPlugin({
         highlight:'".$highlight."'
       });
@@ -819,7 +819,7 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
         }else{
           jQuery('head').append(link);
         }
-        if(jQuery().AlpineAdjustBordersPlugin ){
+        if( jQuery().AlpineAdjustBordersPlugin ){
           jQuery('#".$this->get_private('wid')."-cascade-parent').AlpineAdjustBordersPlugin({
             highlight:'".$highlight."'
           });
@@ -835,7 +835,7 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
  *  Function for printing and initializing JS styles
  *  
  *  @ Since 0.0.1
- *  @ Updated 1.2.6
+ *  @ Updated 1.2.6.3
  */
   function display_hidden(){
     $this->set_private('out',''); // Clear any output;
@@ -895,7 +895,7 @@ class PhotoTileForGooglePlusBot extends PhotoTileForGooglePlusBotTertiary{
 });");
       }
 $this->add("
-jQuery(window).load(function() {
+jQuery(window).on('load',function() {
   jQuery('#".$wid."-AlpinePhotoTiles_container').removeClass('loading');
   if( jQuery().AlpinePhotoTilesPlugin ){
     AlpinePhotoTilesPlugin();
@@ -1101,7 +1101,7 @@ jQuery(window).load(function() {
  *  Setup Lightbox Call
  *  
  *  @ Since 1.2.3
- *  @ Updated 1.2.6
+ *  @ Updated 1.2.6.3
  */
   function add_lightbox_call(){
     $src = $this->get_private('src');
@@ -1114,7 +1114,7 @@ jQuery(window).load(function() {
       if( !empty($lightScript) && !empty($lightStyle) ){
         $this->add("
 <script>
-  jQuery(window).load(function() {
+  jQuery(window).on('load',function() {
     if( !jQuery().".$check." ){
       var css = '".$lightStyle."';
       var link = jQuery(document.createElement('link')).attr({'rel':'stylesheet','href':css,'type':'text/css','media':'screen'});

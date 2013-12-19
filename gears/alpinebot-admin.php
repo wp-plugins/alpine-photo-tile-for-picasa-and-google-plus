@@ -251,7 +251,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
  * Second function for printing options page
  *  
  * @ Since 1.1.0
- * @ Updated 1.2.5
+ * @ Updated 1.2.6.3
  *
  */
   function admin_display_opt_form($options,$currenttab){
@@ -299,7 +299,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       foreach( $positions as $position=>$positionsinfo){
         echo '<div class="'. $position .'">'; 
           if( !empty($positionsinfo['title']) ){ echo '<h4>'. $positionsinfo['title'].'</h4>'; } 
-          if( !empty($positionsinfo['description']) ){ echo '<div style="margin-bottom:15px;"><span class="description" >'. $positionsinfo['description'].'</span></div>'; } 
+          if( !empty($positionsinfo['description']) ){ echo '<div style="margin-bottom:15px;"><span class="describe" >'. $positionsinfo['description'].'</span></div>'; } 
           echo '<table class="form-table">';
             echo '<tbody>';
               if( !empty($positionsinfo['options']) && count($positionsinfo['options']) ){
@@ -352,11 +352,11 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
 //////////////////////      Menu Display Functions       /////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////  
 /**
-  * Function for displaying forms in the widget page
-  *
-  *  @ Since 1.0.0
-  *  @ Updated 1.2.5
-  */
+ * Function for displaying forms in the widget page
+ *
+ * @ Since 1.0.0
+ * @ Updated 1.2.6.3
+ */
   function MenuDisplayCallback($options,$option,$fieldname,$fieldid){
     $default = (isset($option['default'])?$option['default']:'');
     $optionname = (isset($option['name'])?$option['name']:'');
@@ -370,7 +370,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       ?>
       <input type="checkbox" id="<?php echo $fieldid; ?>" name="<?php echo $fieldname; ?>" value="1" <?php checked( $value ); ?> />
       <label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label>
-      <span class="description"><?php echo $optiondescription; ?></span>
+      <span class="describe"><?php echo $optiondescription; ?></span>
       <?php
     }
     // Output radio button form field markup
@@ -381,7 +381,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       foreach ( $valid_options as $valid_option ) {
         ?>
         <input type="radio" name="<?php echo $fieldname; ?>" <?php checked( $valid_option['name'] == $value ); ?> value="<?php echo $valid_option['name']; ?>" />
-        <span class="description"><?php echo $optiondescription; ?></span>
+        <span class="describe"><?php echo $optiondescription; ?></span>
         <?php
       }
     }
@@ -400,7 +400,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
         }
         ?>
         </select>
-        <div class="description"><span class="description"><?php echo $optiondescription; ?></span></div>
+        <div class="describe"><span class="describe"><?php echo $optiondescription; ?></span></div>
       <?php
     } // Output select form field markup
     else if ( 'range' == $fieldtype ) {     
@@ -415,7 +415,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
         }
         ?>
         </select>
-        <span class="description"><?php echo $optiondescription; ?></span>
+        <span class="describe"><?php echo $optiondescription; ?></span>
       <?php
     } 
     // Output text input form field markup
@@ -423,31 +423,31 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       ?>
       <label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label>
       <input type="text" id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" value="<?php echo ( $value ); ?>" />
-      <div class="description"><span class="description"><?php echo $optiondescription; ?></span></div>
+      <div class="describe"><span class="describe"><?php echo $optiondescription; ?></span></div>
       <?php
     } 
     else if ( 'textarea' == $fieldtype ) {
       ?>
       <label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label>
       <textarea id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_textarea" ><?php echo $value; ?></textarea><br>
-      <span class="description"><?php echo (function_exists('esc_textarea')?esc_textarea( $optiondescription ):$optiondescription); ?></span>
+      <span class="describe"><?php echo (function_exists('esc_textarea')?esc_textarea( $optiondescription ):$optiondescription); ?></span>
       <?php
     }   
     else if ( 'color' == $fieldtype ) {
       $value = ($value?$value:$default);
       ?>    
       <label for="<?php echo $fieldid ?>">
-      <input type="text" id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_color"  value="<?php echo ( $value ); ?>" /><span class="description"><?php echo $optiondescription; ?></span></label>
+      <input type="text" id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_color"  value="<?php echo ( $value ); ?>" /><span class="describe"><?php echo $optiondescription; ?></span></label>
       <div id="<?php echo $fieldid; ?>_picker" class="AlpinePhotoTiles_color_picker" ></div>
       <?php
     }
   }
 
 /**
- *  Function for displaying forms in the admin page
+ * Function for displaying forms in the admin page
  *  
- *  @ Since 1.0.0
- *  @ Updated 1.2.5 
+ * @ Since 1.0.0
+ * @ Updated 1.2.6.3
  */
   function AdminDisplayCallback($options,$option,$fieldname,$fieldid){
     $default = (isset($option['default'])?$option['default']:'');
@@ -462,18 +462,18 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       ?>
       <div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div>
       <input type="checkbox" id="<?php echo $fieldid; ?>" name="<?php echo $fieldname; ?>" value="1" <?php checked( $value ); ?> />
-      <div class="admin-description" ><?php echo $optiondescription; ?></div>
+      <div class="admin-describe" ><?php echo $optiondescription; ?></div>
       <?php
     }
     // Output radio button form field markup
     else if ( 'radio' == $fieldtype ) {
       $valid_options = array();
       $valid_options = $option['valid_options'];
-      ?><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label><?php
+      ?><div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div><?php
       foreach ( $valid_options as $valid_option ) {
         ?>
         <input type="radio" name="<?php echo $fieldname; ?>" <?php checked( $valid_option['name'] == $value ); ?> value="<?php echo $valid_option['name']; ?>" />
-        <span class="admin-description"><?php echo $optiondescription; ?></span>
+        <span class="admin-describe"><?php echo $optiondescription; ?></span>
         <?php
       }
     }
@@ -482,7 +482,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       $valid_options = array();
       $valid_options = $option['valid_options']; 
       ?>
-      <label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label>
+      <div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div>
         <select id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" >
         <?php 
         foreach ( $valid_options as $valid_option ) {
@@ -492,12 +492,12 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
         }
         ?>
         </select>
-        <div class="admin-description"><?php echo $optiondescription; ?></div>
+        <div class="admin-describe"><?php echo $optiondescription; ?></div>
       <?php
     } // Output select form field markup
     else if ( 'range' == $fieldtype ) {     
       ?>
-      <label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label>
+      <div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div>
         <select id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" >
         <?php 
         for($i = $option['min'];$i <= $option['max']; $i++){
@@ -507,7 +507,7 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
         }
         ?>
         </select>
-        <div class="admin-description"><?php echo $optiondescription; ?></div>
+        <div class="admin-describe"><?php echo $optiondescription; ?></div>
       <?php
     } 
     // Output text input form field markup
@@ -515,21 +515,21 @@ class PhotoTileForGooglePlusAdminSecondary extends PhotoTileForGooglePlusPrimary
       ?>
       <div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div>
       <input type="text" id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" value="<?php echo ( $value ); ?>" />
-      <div class="admin-description" style="width:50%;"><?php echo $optiondescription; ?></div>
+      <div class="admin-describe" style="width:50%;"><?php echo $optiondescription; ?></div>
       <?php
     } 
     else if ( 'textarea' == $fieldtype ) {
       ?>
-      <label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label>
-      <textarea id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_textarea" ><?php echo wp_htmledit_pre( stripslashes( $value ) ); ?></textarea><br>
-      <span class="admin-description"><?php echo $optiondescription; ?></span>
+      <div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div>
+      <textarea id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_textarea" ><?php echo $value; ?></textarea><br>
+      <span class="admin-describe"><?php echo (function_exists('esc_textarea')?esc_textarea( $optiondescription ):$optiondescription); ?></span>
       <?php
     }   
     else if ( 'color' == $fieldtype ) {
       $value = ($value?$value:$default);
       ?>
       <div class="title"><label for="<?php echo $fieldid; ?>"><?php echo $optiontitle ?></label></div>
-      <input type="text" id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_color"  value="<?php echo ( $value ); ?>" /><div class="admin-description" style="width:40%;"><?php echo $optiondescription; ?></div></label>
+      <input type="text" id="<?php echo $fieldid ?>" name="<?php echo $fieldname; ?>" class="AlpinePhotoTiles_color"  value="<?php echo ( $value ); ?>" /><div class="admin-describe" style="width:40%;"><?php echo $optiondescription; ?></div></label>
       <div id="<?php echo $fieldid; ?>_picker" class="AlpinePhotoTiles_color_picker" ></div>
       <?php
     }
