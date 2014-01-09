@@ -126,7 +126,7 @@ The plugin caches or stores the Picasa feed for three hours (see Caching above).
 
 = How many photos can I show? =
 
-As of version 1.2.0, up to 200 photos can be retrieved and displayed.
+As of version 1.2.0, up to 100 photos can be retrieved and displayed.
 
 
 *If you have any more questions, please leave a message at [the Alpine Press](http://thealpinepress.com/alpine-phototile-for-picasa/ "Plugin Demo").
