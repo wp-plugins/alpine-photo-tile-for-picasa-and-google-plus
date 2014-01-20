@@ -1,25 +1,25 @@
 === Alpine PhotoTile for Google Plus and Picasa  ===
 Contributors: theAlpinePress
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=eric%40thealpinepress%2ecom&lc=US&item_name=Alpine%20PhotoTile%20for%20Google%20Plus%20Donation&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
-Tags: photos, picasa, photostream, stylish, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
+Tags: photos, picasa, google, plus, google+, photostream, stylish, pictures, images, widget, sidebar, gallery, lightbox, fancybox, colorbox, prettybox
 Requires at least: 2.8
 Tested up to: 3.8
-Stable tag: 1.2.6.3
+Stable tag: 1.2.6.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Stylish and compact plugin for displaying Picasa and Google Plus images in a sidebar, post, or page. 
 
 == Description == 
-The Alpine PhotoTile for Google Plus and Picasa  is capable of retrieving photos from a particular Picasa user, a public album, a semi-private album, or a keyword. 
-The photos can be linked to the your Picasa page, a specific URL, or to a Lighbox slideshow. 
+The Alpine PhotoTile for Google Plus (formerly Picasa)  is capable of retrieving photos from a particular Google Plus user, a public album, a semi-private album, or a keyword. 
+The photos can be linked to the your Google Plus page, a specific URL, or to a Lighbox slideshow. 
 Also, the Shortcode Generator makes it easy to insert the widget into posts without learning any of the code. 
 This lightweight but powerful widget takes advantage of WordPress's built in JQuery scripts to create a sleek presentation that I hope you will like. 
 A full description and demonstration is available at [the Alpine Press](http://thealpinepress.com/alpine-phototile-for-picasa/ "Plugin Demo").
 
-**Features:**
+**Alpine PhotoTile for Google+ and Picasa Features:**
 
-* Display GooglePlus images in a sidebar, post, or page
+* Display Google Plus images in a sidebar, post, or page
 * Multiple styles to allow for customization
 * Lighbox feature for interactive slideshow (Fancybox, prettyBox, or ColorBox)
 * Simple instructions
@@ -28,7 +28,7 @@ A full description and demonstration is available at [the Alpine Press](http://t
 
 **Quick Start Guide:**
 
-1. After installing the plugin on your WordPress site, make sure it is activated by logging into your admin area and going to Plugins in the left menu.
+1. After installing the Alpine PhotoTile for Google Plus plugin on your WordPress site, make sure it is activated by logging into your admin area and going to Plugins in the left menu.
 2. To add the plugin to a sidebar, go to Appearance->Widgets in the left menu.
 3. Find the rectangle labeled Alpine PhotoTile for Picasa. Click and drag the rectangle to one of the sidebar containers on the right.
 4. Once you drop the rectangle in a sidebar area, it should open to reveal a menu of options. The only required information for the plugin to work is Picasa User ID. Enter this ID and click save in the right bottom corner of the menu. Please note that only public photos can be displayed, so check your privacy settings.
@@ -37,14 +37,25 @@ A full description and demonstration is available at [the Alpine Press](http://t
 
 == Installation ==
 
-1. Upload `alpine-photo-tile-for-picasa` folder to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. Use the widget like any other widget.
-4. Customize based on your preference.
+**Picasa and Google Plus Plugin Installation**
+
+1. Go to the *Plugins->Add New* section of the Admin Panel.
+2. Either search for "Alpine PhotoTile for Picasa and Google Plus" or upload the `alpine-photo-tile-for-picasa-and-google-plus` folder using the upload tool.
+3. Go to the *Plugins->Installed Plugins* and activate the "Alpine PhotoTile for Picasa and Google Plus" plugin.
+
+**Using the Picasa and Google Plus Widget**
+
+4. Use the widget like any other widget. Go to *Appearance->Widgets* in the left menu. Find the rectangle labeled "Alpine PhotoTile for Picasa and Google Plus". Click and drag the rectangle to one of the sidebar containers on the right.
+5. Customize Alpine PhotoTile for Picasa and Google Plus plugin based on your preference.
+
+**Using the Picasa and Google Plus Shortcode**
+
+6. A shortcode is a line of texted used for loading plugins within WordPress pages or posts. Rather than explaining how to setup the shortcode, I have added a tool to the Alpine PhotoTile for Picasa and Google Plus plugin that generates the shortcode for you. Visit the "Shortcode Generator" on the Picasa and Google Plus plugin's settings page (*Settings->AlpineTile: Picasa and Google Plus->Shortcode Generator*).
+
 
 == Frequently Asked Questions ==
 
-= How do I find my Picasa User ID or Album ID? =
+= How do I find my Google Plus (Picasa) User ID or Album ID? =
 
 Since Picasa has been combined with Google Plus, Picasa photo albums are also Google Plus photo albums. This also means that there are different ways of finding your ID's depending on whether you start at the Picasa website or your Google Plus page.
 
@@ -106,11 +117,11 @@ Since Picasa has been combined with Google Plus, Picasa photo albums are also Go
 
   4. Make sure the album you want to show is set to Public.
 
-= I'm getting the message "Picasa feed was successfully retrieved, but no photos found". What does that mean? =
+= I'm getting the message "Google Plus (Picasa) feed was successfully retrieved, but no photos found". What does that mean? =
 
 This message simply means that while no distinguishable errors occurred, the plugin found your feed to be empty.
 
-= I'm getting the message "Picasa feed not found. Please recheck your ID". What does that mean? =
+= I'm getting the message "Google Plus (Picasa) feed not found. Please recheck your ID". What does that mean? =
 
 This message can mean two things. First, it can indicate that the username or custom url were input incorrectly, causing the feed to fail. In this case, you should try to correct and re-save your IDs.
 
@@ -122,7 +133,7 @@ Yes, rather than explaining how to setup the shortcode, I've created a method of
 
 = Why doesn't the widget show my most recent photos? =
 
-The plugin caches or stores the Picasa feed for three hours (see Caching above). If the new photos have still not appeared after this time, it is possible that Picasa is responsible for the delay.
+The plugin caches or stores the Google Plus (Picasa) feed for three hours (see Caching above). If the new photos have still not appeared after this time, it is possible that Picasa is responsible for the delay.
 
 = How many photos can I show? =
 
@@ -196,6 +207,8 @@ I am a one-man development team and I distribute these plugins for free, so plea
 * Replaced deprecated jQuery APIs  ( .load() and .browser )
 * Updated prettyPhoto and colorbox
 
+= 1.2.6.4 =
+* jQuery backwards compatibility ( .bind() function for jQuery v1.6.3 and less )
 
 = TODO =
 * Change to FancyBox 2
